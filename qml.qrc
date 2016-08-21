@@ -6,5 +6,8 @@
         <file>qml/QChartGallery.js</file>
         <file>qml/jbQuick/Charts/QChart.js</file>
         <file>qml/jbQuick/Charts/QChart.qml</file>
+        <file>qml/InitWnd.qml</file>
+        <file>qml/ProcessingWnd.qml</file>
+        <file>qml/StandbyWnd.qml</file>
     </qresource>
 </RCC>

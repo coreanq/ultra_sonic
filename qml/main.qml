@@ -1,88 +1,61 @@
-import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.2
-import "firmata"
+import QtQuick 2.7
+import QtQuick.Controls 2.0 
+import QtQuick.Layouts 1.3
+import QtQuick.Extras 1.4
 
-ApplicationWindow{
+Rectangle{
     id: main
-    visible: true
-    width: 640
-    height: 480
-    title: qsTr("Hello World")
-    PortSelector {
-        id: port
-        anchors.top: main.top
-        height:40
-        width: main.width
-        Rectangle {
-            visible: false
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.5
+    anchors.fill: parent
+
+    color: "blue"
+
+    ListModel {
+        id: viewModel
+        ListElement {
+            qmlName: "InitWnd.qml"
         }
-
-        Component.onCompleted: {
-
+        ListElement {
+            qmlName: "ProcessingWnd.qml"
         }
-        onDataReceived: {
-            dataUpdate(rawValue)
-        }
-
-
-
-    }
-    QChartGallery{
-        id: gallery
-        anchors.left: main.left
-        anchors.top: port.bottom
-        width: main.width
-        height: main.height - port.height
-
-        Rectangle{
-            visible: false
-            anchors.fill: parent
-            color: "green"
-            opacity: 0.5
+        ListElement {
+            qmlName: "StandbyWnd.qml"
         }
     }
-    Timer {
-        id: timer
-        interval: 100
-        running: false
-        repeat: true
-        onTriggered: {
-            var d = new Date()
-            gallery.chart_line_data.ChartLineData["labels"].shift()
-            gallery.chart_line_data.ChartLineData["labels"].push(d.getSeconds() + "." + d.getMilliseconds() )
-            gallery.chart_line_data.ChartLineData["datasets"][0]["data"].shift()
-            gallery.chart_line_data.ChartLineData["datasets"][0]["data"].push(Math.floor(Math.random() * 400 +1 ).toString())
-            gallery.chart_line_data.ChartLineData["datasets"][1]["data"].shift()
-            gallery.chart_line_data.ChartLineData["datasets"][1]["data"].push(Math.floor(Math.random() * 400 +1 ).toString())
-            gallery.chart_line.repaint()
+    Component {
+        id: delegate
+        Loader {
+            id: wnd
+            source: qmlName
+            width: parent.width / 10  * 8
+            height: parent.height / 10 * 8
+            z: wnd.PathView.isCurrentItem ? 0 : -1
+            opacity: wnd.PathView.isCurrentItem ? 1: 0.5
+            scale: wnd.PathView.isCurrentItem ? 1: 0.5
 
         }
     }
-    function dataUpdate(rawValue){
-        var d = new Date()
-        gallery.chart_line_data.ChartLineData["labels"].shift()
-        gallery.chart_line_data.ChartLineData["labels"].push(d.getSeconds() + "." + d.getMilliseconds() )
-        gallery.chart_line_data.ChartLineData["datasets"][0]["data"].shift()
-        gallery.chart_line_data.ChartLineData["datasets"][0]["data"].push(rawValue.toString())
-//        gallery.chart_line_data.ChartLineData["datasets"][1]["data"].shift()
-//        gallery.chart_line_data.ChartLineData["datasets"][1]["data"].push(Math.floor(Math.random() * 400 +1 ).toString())
-        gallery.chart_line.repaint()
+//    Rectangle{
+//        anchors.left: parent.left
+//        width: 580
+//        height: 180
+//        color: "yellow"
+//        opacity: 0.5
+//        z: 100
 
+//    }
+
+    PathView {
+        id: pathView
+        anchors.fill: parent
+        model: viewModel
+        delegate: delegate
+        path: Path {
+            startX: parent.width /2
+            startY: parent.height /2
+            PathQuad { x: parent.width / 2; y: -parent.height * 0.1; controlX: parent.width * 1.1 ; controlY: parent.height/2 }
+            PathQuad { x: parent.width / 2; y: parent.height /2; controlX: -parent.width * 0.1; controlY: parent.height/2 }
+        }
     }
 }
 
 
-//    footer: TabBar {
-//        id: tabBar
-//        currentIndex: swipeView.currentIndex
-//        TabButton {
-//            text: qsTr("First")
-//        }
-//        TabButton {
-//            text: qsTr("Second")
-//        }
-//    }
