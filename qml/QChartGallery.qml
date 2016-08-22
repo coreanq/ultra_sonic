@@ -13,7 +13,7 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.2
 import jbQuick.Charts 1.0
 
@@ -39,42 +39,7 @@ Item {
       width: chart_width + chart_spacing;
       height: chart_height + chart_spacing + row_height + text_height;
 
-    // /////////////////////////////////////////////////////////////////
-    // Header
-    // /////////////////////////////////////////////////////////////////
-    Rectangle {
 
-      id: button;
-      visible: true
-
-      anchors.top:  parent.top;
-      anchors.right: parent.right;
-      anchors.rightMargin: 10
-
-      width: 100;
-      height: 32;
-
-      color: "#2d91ea";
-      radius: 8;
-
-      Text {
-        anchors.centerIn: parent;
-        color: "#ffffff";
-        text: "Repaint";
-        font.bold: true;
-      }
-
-      MouseArea {
-        anchors.fill: parent;
-        onPressed: {
-          button.color = "#1785e6"
-        }
-        onReleased: {
-          button.color = "#2d91ea"
-          chart_line.repaint();
-        }
-      }
-    }
 
     // /////////////////////////////////////////////////////////////////
     // Body

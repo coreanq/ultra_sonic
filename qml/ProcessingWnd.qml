@@ -5,7 +5,6 @@ import "firmata"
 
 Rectangle{
     id: main
-    anchors.fill: parent
     PortSelector {
         id: port
         anchors.top: main.top

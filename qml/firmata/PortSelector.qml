@@ -1,10 +1,12 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.2
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.0
 import Firmata 1.0
 
 RowLayout {
     signal dataReceived(int rawValue)
+    signal portOpened()
+    signal portClosed()
 
     function openPort(portName) {
         firmata.backend.device = portName;
@@ -17,6 +19,12 @@ RowLayout {
         id: firmata
         backend: SerialFirmata{
             baudRate: 115200
+            onAvailabilityChanged: {
+               if( available == true )
+                   portOpened()
+               else
+                   portClosed()
+            }
         }
         AnalogPin {
             channel: 7
@@ -24,15 +32,13 @@ RowLayout {
             onSampled: {
                 dataReceived(rawValue)
             }
-
-
         }
     }
 
     ComboBox {
         id: cmbPortName
-		model: SerialPortList
-		textRole: "name"
+        model: SerialPortList
+        textRole: "name"
     }
 
     Button{
