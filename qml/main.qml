@@ -33,7 +33,7 @@ ApplicationWindow{
             width: parent.width / 10  * 8
             height: parent.height / 10 * 8
             z: pathView.currentItem == initWnd ? 0 : -1
-            opacity: pathView.currentItem == initWnd? 1: 0.5
+            opacity: pathView.currentItem == initWnd ? 1: 0.5
             scale: pathView.currentItem == initWnd ? 1: 0.5
 
        }
@@ -57,18 +57,7 @@ ApplicationWindow{
        }
     }
 
-    Component {
-        id: delegate
-        Loader {
-            id: wnd
-            source: qmlName
-            width: parent.width / 10  * 8
-            height: parent.height / 10 * 8
-            z: wnd.PathView.isCurrentItem ? 0 : -1
-            opacity: wnd.PathView.isCurrentItem ? 1: 0.5
-            scale: wnd.PathView.isCurrentItem ? 1: 0.5
-        }
-    }
+
 //    onPortOpened:{
 //        console.log("open")
 //    }
@@ -86,10 +75,6 @@ ApplicationWindow{
             startY: main.height /2
             PathQuad { x: main.width / 2; y: -main.height * 0.1; controlX: main.width * 1.1 ; controlY: main.height/2 }
             PathQuad { x: main.width / 2; y: main.height /2; controlX: -main.width * 0.1; controlY: main.height/2 }
-        }
-        onCurrentItemChanged:{
-            currentItem.scale = 1
-
         }
     }
 }
