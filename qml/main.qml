@@ -11,21 +11,8 @@ ApplicationWindow{
     visible: true
     width: 640
     height: 480
-    title: ""
+    title: "IOT 도어열림알림센서"
 
-//    ListModel {
-//        id: viewModel
-//        ListElement {
-//            qmlName: "InitWnd.qml"
-//        }
-//      ListElement {
-//            qmlName: "StandbyWnd.qml"
-//        }
-
-//        ListElement {
-//            qmlName: "ProcessingWnd.qml"
-//        }
-//      }
     VisualItemModel{
        id: itemModel
        InitWnd{
