@@ -4,14 +4,32 @@ import QtQuick.Layouts 1.3
 import QtQuick.Extras 1.4
 import QtQml 2.2
 import "firmata"
+import QtQml.StateMachine 1.0 as DSM
+
 ApplicationWindow{
+    signal sgInit()
+    signal sgStandby()
+    signal sgProcessing()
     id: main
-    signal portOpened()
-    signal portClosed()
+
     visible: true
-    width: 640
-    height: 480
+    width: 800
+    height: 640
     title: "IOT 도어열림알림센서"
+
+    Connections {
+        target: initWnd
+        onComPortOpened:{
+            console.log("open")
+            sgStandby()
+        }
+
+        onComPortClosed:{
+            console.log("close")
+            sgInit()
+        }
+
+    }
 
     VisualItemModel{
        id: itemModel
@@ -22,7 +40,6 @@ ApplicationWindow{
             z: pathView.currentItem == initWnd ? 0 : -1
             opacity: pathView.currentItem == initWnd ? 1: 0.5
             scale: pathView.currentItem == initWnd ? 1: 0.5
-
        }
        StandbyWnd{
            id: standbyWnd
@@ -44,15 +61,6 @@ ApplicationWindow{
        }
     }
 
-
-//    onPortOpened:{
-//        console.log("open")
-//    }
-//    onPortClosed:{
-//        console.log("close")
-//    }
-
-
     PathView {
         id: pathView
         anchors.fill: parent
@@ -63,6 +71,54 @@ ApplicationWindow{
             PathQuad { x: main.width / 2; y: -main.height * 0.1; controlX: main.width * 1.1 ; controlY: main.height/2 }
             PathQuad { x: main.width / 2; y: main.height /2; controlX: -main.width * 0.1; controlY: main.height/2 }
         }
+    }
+    DSM.StateMachine {
+       id: stateMachine
+       initialState: initState
+       running: true
+       DSM.State {
+           id: initState
+           DSM.SignalTransition{
+               targetState: standbyState
+               signal: main.sgStandby
+           }
+           onEntered: {
+               pathView.incrementCurrentIndex()
+           }
+           onExited: {
+           }
+       }
+       DSM.State {
+           id: standbyState
+           DSM.SignalTransition{
+               targetState: processingState
+               signal: sgProcessing
+           }
+           DSM.SignalTransition{
+               targetState: initState
+               signal: main.sgInit
+           }
+
+           onEntered: {
+
+           }
+           onExited: {
+           }
+       }
+       DSM.State {
+           id: processingState
+           DSM.SignalTransition{
+               targetState: initState
+               signal: main.sgInit
+           }
+           onEntered:{
+
+           }
+           onExited: {
+
+           }
+       }
+
     }
 }
 

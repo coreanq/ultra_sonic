@@ -6,8 +6,10 @@ import "firmata"
 
 Rectangle{
     signal dataReceived(int rawValue)
-    signal portOpened()
-    signal portClosed()
+    signal comPortOpened()
+    signal comPortClosed()
+    signal sizeChanged()
+
     id: initWnd
     color: "lightblue"
     clip: true
@@ -19,97 +21,126 @@ Rectangle{
         width: parent.width
         height: 40
         clip: true
-        Rectangle {
-            id: back
-            visible: false
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.5
-        }
-
-        Component.onCompleted: {
-
-        }
         onDataReceived: {
             dataReceived(rawValue)
         }
         onPortOpened:  {
-           back.visible= true
+           comPortOpened()
+
         }
         onPortClosed:  {
-            back.visible = false
+            comPortClosed()
         }
 
     }
     Item {
         id: container
-        anchors.verticalCenter: initWnd.verticalCenter
+        anchors.top : port.bottom
+
         anchors.verticalCenterOffset: port.height
-        anchors.horizontalCenter: initWnd.horizontalCenter
         width: parent.width
-        height: parent.height - port.height
+        height: parent.height - port.height - label.height
         Rectangle{
             anchors.fill: parent
             color: "black"
-            opacity: 0.5
+            opacity: 0.6
         }
-
-        Image {
-            id: computer
-            anchors.left: parent.left
-            anchors.rightMargin: (parent.width - computer.sourceSize.width - add.sourceSize.width - wired.sourceSize.width)/2
-            source:"../image/computer.png"
-            Behavior on scale {
+        Rectangle {
+            id: focus
+            radius: 50
+            color: "white"
+            Behavior on x {
                 NumberAnimation {
                     duration: 1000
                     loops: Animation.Infinite
                     easing.type: Easing.InOutBounce
                 }
-
             }
-        }
-
-        Image {
-            id: add
-            anchors.left: computer.right
-            source:"../image/add.png"
-            scale: 0.5
-            Behavior on scale {
+            Behavior on y {
                 NumberAnimation {
                     duration: 1000
                     loops: Animation.Infinite
                     easing.type: Easing.InOutBounce
                 }
-
             }
-        }
-        Image {
-            id: wired
-            anchors.left: add.right
-            source: "../image/wired.png"
-            Behavior on scale {
-                NumberAnimation {
-                    duration: 1000
-                    loops: Animation.Infinite
-                    easing.type: Easing.InOutBounce
-                }
 
-            }
         }
-        Image {
-            anchors.top: computer.bottom
+
+        Column {
             anchors.horizontalCenter: parent.horizontalCenter
-            id: click
-            source: "../image/click.png"
-            Behavior on scale {
-                NumberAnimation {
-                    duration: 1000
-                    loops: Animation.Infinite
-                    easing.type: Easing.InOutBounce
-                }
+            anchors.verticalCenter: parent.verticalCenter
+            Row {
+                Image {
+                    id: computer
+                    source:"../image/computer.png"
+                    Behavior on scale {
+                        NumberAnimation {
+                        duration: 1000
+                        loops: Animation.Infinite
+                        easing.type: Easing.InOutBounce
+                        }
+                    }
 
+                }
+                Image {
+                    id: add
+                    source:"../image/add.png"
+                    scale: 0.5
+                    Behavior on scale {
+                        NumberAnimation {
+                        duration: 1000
+                        loops: Animation.Infinite
+                        easing.type: Easing.InOutBounce
+                        }
+
+                    }
+
+                }
+                Image {
+                    id: wired
+                    source: "../image/wired.png"
+                    Behavior on scale {
+                        NumberAnimation {
+                        duration: 1000
+                        loops: Animation.Infinite
+                        easing.type: Easing.InOutBounce
+                        }
+
+                    }
+
+                }
+            }
+            Image {
+                id: click
+                anchors.horizontalCenter: parent.horizontalCenter
+                source: "../image/click.png"
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: 1000
+                        loops: Animation.Infinite
+                        easing.type: Easing.InOutBounce
+                    }
+                }
             }
         }
+    }
+    Label {
+        id: label
+        anchors.top: container.bottom
+        width: parent.width
+        height: 30
+        font.pixelSize: 20
+        font.bold: true
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+
+    }
+
+    onWidthChanged: {
+        sizeChanged()
+    }
+    onHeightChanged: {
+        sizeChanged()
     }
 
 
@@ -120,40 +151,46 @@ Rectangle{
        DSM.State {
            id: computerState
            DSM.TimeoutTransition{
-               targetState: addState
-               timeout: 2000
-           }
-           onEntered: {
-               computer.scale = 1.5
-           }
-           onExited: {
-               computer.scale = 1
-           }
-       }
-       DSM.State{
-           id: addState
-           DSM.TimeoutTransition{
                targetState: wiredState
-               timeout: 2000
+               timeout: 3000
            }
+           DSM.SignalTransition{
+               targetState: computerState
+               signal: initWnd.sizeChanged
+           }
+
            onEntered: {
-               add.scale =  1
+               focus.width = computer.width * 1.2
+               focus.height = computer.height * 1.2
+               var transPoint = computer.mapToItem(container, computer.x, computer.y)
+               focus.x = transPoint.x - 15
+               focus.y = transPoint.y - 15
+               label.text = "컴퓨터를 준비"
+               console.log(transPoint)
            }
            onExited: {
-               add.scale = 0.5
            }
        }
        DSM.State{
            id: wiredState
            DSM.TimeoutTransition{
                targetState: clickState
-               timeout: 2000
+               timeout: 3000
+           }
+          DSM.SignalTransition{
+               targetState: computerState
+               signal: initWnd.sizeChanged
            }
            onEntered: {
-               wired.scale = 1.5
+               focus.width = wired.width * 1.2
+               focus.height = wired.height * 1.2
+               var transPoint = computer.mapToItem(container, wired.x, wired.y)
+               focus.x = transPoint.x - 15
+               focus.y = transPoint.y - 15
+               label.text = "장비와 컴퓨터를 연결"
+               console.log(transPoint)
            }
            onExited: {
-               wired.scale = 1
            }
        }
 
@@ -161,13 +198,22 @@ Rectangle{
            id: clickState
            DSM.TimeoutTransition{
                targetState: computerState
-               timeout: 2000
+               timeout: 3000
+           }
+           DSM.SignalTransition{
+               targetState: computerState
+               signal: initWnd.sizeChanged
            }
            onEntered:{
-               click.scale = 1.5
+               focus.width = click.width * 1.2
+               focus.height = click.height * 1.2
+               var transPoint = computer.mapToItem(container, click.x, click.y)
+               focus.x = transPoint.x - 10
+               focus.y = transPoint.y - 10
+               label.text = "Open 을 클릭하여 장비를 활성"
+               console.log(transPoint)
            }
            onExited: {
-               click.scale = 1
            }
 
        }
