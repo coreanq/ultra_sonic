@@ -54,7 +54,7 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         width: parent.width;
-        height: parent.height - button.height;
+        height: parent.height ;
 
         columns: 1;
         spacing: chart_spacing;

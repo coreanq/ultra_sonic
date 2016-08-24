@@ -5,6 +5,7 @@ import Firmata 1.0
 
 RowLayout {
     signal dataReceived(int rawValue)
+    signal swithChanged(bool state)
     signal portOpened()
     signal portClosed()
 
@@ -31,7 +32,17 @@ RowLayout {
             pin:7
             onSampled: {
                 dataReceived(rawValue)
+//                console.log(rawValue)
             }
+        }
+        DigitalPin{
+            output: false
+            pin: 10
+            onValueChanged: {
+                console.log(v)
+//                switchChanged(value)
+            }
+
         }
     }
 
@@ -43,6 +54,7 @@ RowLayout {
 
     Button{
         id: btnOpen
+        width: 100
         text: "Open"
         onClicked: {
             if( text == "Open" ){

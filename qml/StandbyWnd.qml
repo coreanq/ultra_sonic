@@ -5,9 +5,15 @@ import QtQml.StateMachine 1.0 as DSM
 
 Rectangle{
     id: standbyWnd
-    color: "yellow"
-    opacity: 0.5
+    color: "lightyellow"
     clip: true
+    Rectangle {
+        anchors.fill: parent
+        anchors.margins: 5
+        color: "black"
+        z: -1
+    }
+
     Item {
         id: container
         width: parent.width
@@ -20,18 +26,11 @@ Rectangle{
             anchors.verticalCenter: parent.verticalCenter
             source:"../image/switch.png"
             scale: 1.5
-            Behavior on y {
-               NumberAnimation {
-                   duration: 1000
-                   loops: Animation.Infinite
-                   easing.type: Easing.InOutQuad
-               }
-           }
         }
         Image {
             id: click
             x: parent.x
-            y: parent.height - click.paintedHeight * 1.5
+            y: parent.height - click.sourceSize.height * 1.5
             source: "../image/click.png"
             scale: 1.5
             Behavior on y {
@@ -64,7 +63,7 @@ Rectangle{
             id: initState
             DSM.TimeoutTransition{
                 targetState: clickedState
-                timeout: 2000
+                timeout: 1000
             }
             onEntered: {
                 switchOn.visible =  true
@@ -78,7 +77,7 @@ Rectangle{
             id: clickedState
             DSM.TimeoutTransition{
                 targetState: initState
-                timeout: 2000
+                timeout: 1500
             }
             onEntered: {
                 click.x = switchOn.x + 15

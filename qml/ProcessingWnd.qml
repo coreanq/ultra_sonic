@@ -4,21 +4,24 @@ import QtQuick.Layouts 1.3
 import "firmata"
 
 Rectangle{
-    id: main
+    id: processingWnd
+    color: "black"
+
+    Connections	{
+        target: mainWnd
+        onComDataReceived:{
+//            console.log("%")
+            dataUpdate(rawValue)
+        }
+        onComSwitchChanged:{
+            console.log(state)
+        }
+    }
 
     QChartGallery{
         id: gallery
-        anchors.left: main.left
-        anchors.top: port.bottom
-        width: main.width
-        height: main.height
-
-        Rectangle{
-            visible: false
-            anchors.fill: parent
-            color: "green"
-            opacity: 0.5
-        }
+        anchors.fill: parent
+        anchors.margins: 5
     }
     Timer {
         id: timer

@@ -5,45 +5,23 @@ import QtQml.StateMachine 1.0 as DSM
 import "firmata"
 
 Rectangle{
-    signal dataReceived(int rawValue)
-    signal comPortOpened()
-    signal comPortClosed()
     signal sizeChanged()
-
     id: initWnd
     color: "lightblue"
     clip: true
 
-
-    PortSelector {
-        id: port
-        anchors.top: parent.top
-        width: parent.width
-        height: 40
-        clip: true
-        onDataReceived: {
-            dataReceived(rawValue)
-        }
-        onPortOpened:  {
-           comPortOpened()
-
-        }
-        onPortClosed:  {
-            comPortClosed()
-        }
-
-    }
     Item {
         id: container
-        anchors.top : port.bottom
+        anchors.top : parent.top
+        clip: true
 
-        anchors.verticalCenterOffset: port.height
+        anchors.verticalCenterOffset: parent.height
         width: parent.width
-        height: parent.height - port.height - label.height
+        height: parent.height - label.height
         Rectangle{
             anchors.fill: parent
             color: "black"
-            opacity: 0.8
+            opacity: 0.5
         }
         Rectangle {
             id: focus
@@ -133,7 +111,6 @@ Rectangle{
                focus.x = transPoint.x - 15
                focus.y = transPoint.y - 15
                label.text = "컴퓨터를 준비"
-               console.log(transPoint)
            }
            onExited: {
            }
@@ -155,7 +132,6 @@ Rectangle{
                focus.x = transPoint.x - 15
                focus.y = transPoint.y - 15
                label.text = "장비와 컴퓨터를 연결"
-               console.log(transPoint)
            }
            onExited: {
            }
@@ -178,7 +154,6 @@ Rectangle{
                focus.x = transPoint.x - 10
                focus.y = transPoint.y - 10
                label.text = "Open 을 클릭하여 장비를 활성"
-               console.log(transPoint)
            }
            onExited: {
            }

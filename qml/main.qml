@@ -7,128 +7,212 @@ import "firmata"
 import QtQml.StateMachine 1.0 as DSM
 
 ApplicationWindow{
-    signal sgInit()
-    signal sgStandby()
-    signal sgProcessing()
-    id: main
+    signal comDataReceived(int rawValue)
+    signal comSwitchChanged(bool state)
+    signal comPortOpened()
+    signal comPortClosed()
+    id: mainWnd
 
     visible: true
     width: 800
     height: 640
-    title: "IOT 도어열림알림센서"
+    title: "도어열림감지센서"
 
-    Connections {
-        target: initWnd
-        onComPortOpened:{
-            console.log("open")
-            while(1)
+    onComPortOpened:{
+        console.log("open")
+        while(1)
+        {
+            if( pathView.currentIndex == 1)
             {
-                if( pathView.currentIndex == 1)
-                    break;
-                pathView.incrementCurrentIndex()
+                break;
             }
+            pathView.incrementCurrentIndex()
         }
-        onComPortClosed:{
-            console.log("close")
-            while(1)
+    }
+    onComPortClosed:{
+        console.log("close")
+        while(1)
+        {
+            if( pathView.currentIndex == 0)
             {
-                if( pathView.currentIndex == 0)
-                    break;
-                pathView.incrementCurrentIndex()
+                break;
             }
+            pathView.incrementCurrentIndex()
+        }
+    }
+    PortSelector {
+        id: port
+        anchors.top: parent.top
+        width: parent.width
+        height: 40
+        clip: true
+        onDataReceived: {
+//            console.log("!")
+            comDataReceived(rawValue)
+        }
+        onPortOpened:  {
+           comPortOpened()
+        }
+        onPortClosed:  {
+            comPortClosed()
+        }
+        onSwithChanged: {
+            console.log("12483")
+            comSwitchChanged(state)
         }
 
     }
-
     VisualItemModel{
        id: itemModel
-       InitWnd{
-           id: initWnd
+
+       Flipable {
+            id: _initWnd
             width: parent.width / 10  * 8
             height: parent.height / 10 * 8
-            z: pathView.currentItem == initWnd ? 0 : -1
-            opacity: pathView.currentItem == initWnd ? 1: 0.5
-            scale: pathView.currentItem == initWnd ? 1: 0.5
-       }
-       StandbyWnd{
-           id: standbyWnd
-             width: parent.width / 10  * 8
-            height: parent.height / 10 * 8
-            z: pathView.currentItem == standbyWnd? 0 : -1
-            opacity: pathView.currentItem == standbyWnd ? 1: 0.5
-            scale:  pathView.currentItem == standbyWnd ? 1: 0.5
+            z: pathView.currentItem == _initWnd ? 0 : -1
+            scale: pathView.currentItem == _initWnd ? 1: 0.5
 
-       }
-       ProcessingWnd{
-           id: processingWnd
+            property bool flipped: false
+
+            front: InitWnd{ anchors.fill: parent}
+            back: Image {
+                    source: "../image/card_back.jpg";
+                    anchors.fill: parent;
+            }
+
+
+            transform: Rotation {
+                id: _rotationInitWnd
+                origin.x: _initWnd.width/2
+                origin.y: _initWnd.height/2
+                axis.x: 0; axis.y: 1; axis.z: 0     // set axis.y to 1 to rotate around y-axis
+                angle: 0    // the default angle
+            }
+
+            states: State {
+                name: "back"
+                PropertyChanges { target: _rotationInitWnd; angle: 180 }
+                when: _initWnd.flipped
+            }
+
+            transitions: Transition {
+                NumberAnimation { target: _rotationInitWnd; property: "angle"; duration: 800 }
+            }
+        }
+
+       Flipable {
+            id: _standbyWnd
             width: parent.width / 10  * 8
             height: parent.height / 10 * 8
-            z: pathView.currentItem == processingWnd ? 0 : -1
-            opacity: pathView.currentItem == processingWnd ? 1: 0.5
-            scale: pathView.currentItem == processingWnd ? 1: 0.5
+            z: pathView.currentItem == _standbyWnd ? 0 : -1
+            scale: pathView.currentItem == _standbyWnd ? 1: 0.5
 
-       }
+            property bool flipped: true
+
+            front: StandbyWnd{ anchors.fill: parent}
+            back: Image {
+                    source: "../image/card_back.jpg";
+                    anchors.fill: parent;
+            }
+
+
+            transform: Rotation {
+                id: _rotationStandby
+                origin.x: _standbyWnd.width/2
+                origin.y: _standbyWnd.height/2
+                axis.x: 0; axis.y: 1; axis.z: 0     // set axis.y to 1 to rotate around y-axis
+                angle: 0    // the default angle
+            }
+
+            states: State {
+                name: "back"
+                PropertyChanges { target: _rotationStandby; angle: 180 }
+                when: _standbyWnd.flipped
+            }
+
+            transitions: Transition {
+                NumberAnimation { target: _rotationStandby; property: "angle"; duration: 800 }
+            }
+        }
+       Flipable {
+            id: _processingWnd
+            width: parent.width / 10  * 8
+            height: parent.height / 10 * 8
+            z: pathView.currentItem == _processingWnd ? 0 : -1
+            scale: pathView.currentItem == _processingWnd ? 1: 0.5
+
+            property bool flipped: true
+
+            front: ProcessingWnd{ anchors.fill: parent}
+            back: Image {
+                    source: "../image/card_back.jpg";
+                    anchors.fill: parent;
+            }
+
+
+            transform: Rotation {
+                id: _rotationProcessing
+                origin.x: _processingWnd.width/2
+                origin.y: _processingWnd.height/2
+                axis.x: 0; axis.y: 1; axis.z: 0     // set axis.y to 1 to rotate around y-axis
+                angle: 0    // the default angle
+            }
+
+            states: State {
+                name: "back"
+                PropertyChanges { target: _rotationProcessing; angle: 180 }
+                when: _processingWnd.flipped
+            }
+
+            transitions: Transition {
+                NumberAnimation { target: _rotationProcessing; property: "angle"; duration: 800 }
+            }
+        }
+
     }
-
+    Image {
+        source: "../image/background.jpg"
+        anchors.fill: parent; clip: true
+        z: -1
+    }
     PathView {
         id: pathView
-        anchors.fill: parent
+        anchors.top: port.bottom
+        width: parent.width
+        height: parent.height - port.height
         model: itemModel
         interactive: false
+        flickDeceleration: 20
+        clip: true
         path: Path {
-            startX: main.width /2
-            startY: main.height /2
-            PathQuad { x: main.width / 2; y: -main.height * 0.1; controlX: main.width * 1.1 ; controlY: main.height/2 }
-            PathQuad { x: main.width / 2; y: main.height /2; controlX: -main.width * 0.1; controlY: main.height/2 }
+            startX: mainWnd.width /2
+            startY: mainWnd.height /2
+            PathQuad { x: mainWnd.width / 2; y: -mainWnd.height * 0.1; controlX: mainWnd.width * 1.1 ; controlY: mainWnd.height/2 }
+            PathQuad { x: mainWnd.width / 2; y: mainWnd.height /2; controlX: -mainWnd.width * 0.1; controlY: mainWnd.height/2 }
         }
-    }
-    DSM.StateMachine {
-       id: stateMachine
-       initialState: initState
-       running: true
-       DSM.State {
-           id: initState
-           DSM.SignalTransition{
-               targetState: standbyState
-               signal: main.sgStandby
-           }
-           onEntered: {
-           }
-           onExited: {
-           }
-       }
-       DSM.State {
-           id: standbyState
-           DSM.SignalTransition{
-               targetState: processingState
-               signal: sgProcessing
-           }
-           DSM.SignalTransition{
-               targetState: initState
-               signal: main.sgInit
-           }
-
-           onEntered: {
-
-           }
-           onExited: {
-           }
-       }
-       DSM.State {
-           id: processingState
-           DSM.SignalTransition{
-               targetState: initState
-               signal: main.sgInit
-           }
-           onEntered:{
-
-           }
-           onExited: {
-
-           }
-       }
+        onCurrentIndexChanged: {
+            switch( currentIndex )
+            {
+            case 0:
+                _initWnd.flipped = false
+                _standbyWnd.flipped = true
+                _processingWnd.flipped = true
+                break;
+            case 1:
+                _initWnd.flipped = true
+                _standbyWnd.flipped = false
+                _processingWnd.flipped = true
+                break;
+            case 2:
+                _initWnd.flipped = true
+                _standbyWnd.flipped = true
+                _processingWnd.flipped = false
+                break;
+            }
+        }
 
     }
+
 }
 
 

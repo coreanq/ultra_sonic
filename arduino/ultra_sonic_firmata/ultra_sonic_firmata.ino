@@ -2,7 +2,8 @@
 
 #define trigPin 11
 #define echoPin 12
-#define RedLed 13
+#define switchPin 10
+#define RedLed 4
 #define greenLed 3
 #define pingPin 7
 
@@ -12,6 +13,7 @@ void setup() {
   pinMode(echoPin, INPUT);
   pinMode(RedLed, OUTPUT);
   pinMode(greenLed, OUTPUT);
+  pinMode(switchPin, INPUT);
   Firmata.setFirmwareVersion(FIRMATA_FIRMWARE_MAJOR_VERSION, FIRMATA_FIRMWARE_MINOR_VERSION);
   Firmata.begin(115200);
 }
@@ -27,6 +29,8 @@ void loop()
   //  Serial.print(distance);
   //  Serial.println(" cm");
   Firmata.sendAnalog(pingPin, distance);
+  bool pinState = digitalRead(switchPin);
+  Firmata.sendDigitalPort(switchPin, pinState);
 }
 
 
