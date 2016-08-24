@@ -5,34 +5,13 @@ import "firmata"
 
 Rectangle{
     id: main
-    PortSelector {
-        id: port
-        anchors.top: main.top
-        height:40
-        width: main.width
-        Rectangle {
-            visible: false
-            anchors.fill: parent
-            color: "black"
-            opacity: 0.5
-        }
 
-        Component.onCompleted: {
-
-        }
-        onDataReceived: {
-            dataUpdate(rawValue)
-        }
-
-
-
-    }
     QChartGallery{
         id: gallery
         anchors.left: main.left
         anchors.top: port.bottom
         width: main.width
-        height: main.height - port.height
+        height: main.height
 
         Rectangle{
             visible: false

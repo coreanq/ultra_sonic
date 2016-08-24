@@ -43,7 +43,7 @@ Rectangle{
         Rectangle{
             anchors.fill: parent
             color: "black"
-            opacity: 0.6
+            opacity: 0.8
         }
         Rectangle {
             id: focus
@@ -53,14 +53,14 @@ Rectangle{
                 NumberAnimation {
                     duration: 1000
                     loops: Animation.Infinite
-                    easing.type: Easing.InOutBounce
+                    easing.type: Easing.InOutQuad
                 }
             }
             Behavior on y {
                 NumberAnimation {
                     duration: 1000
                     loops: Animation.Infinite
-                    easing.type: Easing.InOutBounce
+                    easing.type: Easing.InOutQuad
                 }
             }
 
@@ -72,56 +72,23 @@ Rectangle{
             Row {
                 Image {
                     id: computer
-                    source:"../image/computer.png"
-                    Behavior on scale {
-                        NumberAnimation {
-                        duration: 1000
-                        loops: Animation.Infinite
-                        easing.type: Easing.InOutBounce
-                        }
-                    }
-
+                    source: "../image/computer.png"
                 }
                 Image {
                     id: add
                     source:"../image/add.png"
                     scale: 0.5
-                    Behavior on scale {
-                        NumberAnimation {
-                        duration: 1000
-                        loops: Animation.Infinite
-                        easing.type: Easing.InOutBounce
-                        }
-
-                    }
-
-                }
+               }
                 Image {
                     id: wired
                     source: "../image/wired.png"
-                    Behavior on scale {
-                        NumberAnimation {
-                        duration: 1000
-                        loops: Animation.Infinite
-                        easing.type: Easing.InOutBounce
-                        }
-
-                    }
-
                 }
             }
             Image {
                 id: click
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "../image/click.png"
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: 1000
-                        loops: Animation.Infinite
-                        easing.type: Easing.InOutBounce
-                    }
-                }
-            }
+           }
         }
     }
     Label {

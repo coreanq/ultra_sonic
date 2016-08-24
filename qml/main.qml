@@ -21,12 +21,21 @@ ApplicationWindow{
         target: initWnd
         onComPortOpened:{
             console.log("open")
-            sgStandby()
+            while(1)
+            {
+                if( pathView.currentIndex == 1)
+                    break;
+                pathView.incrementCurrentIndex()
+            }
         }
-
         onComPortClosed:{
             console.log("close")
-            sgInit()
+            while(1)
+            {
+                if( pathView.currentIndex == 0)
+                    break;
+                pathView.incrementCurrentIndex()
+            }
         }
 
     }
@@ -65,6 +74,7 @@ ApplicationWindow{
         id: pathView
         anchors.fill: parent
         model: itemModel
+        interactive: false
         path: Path {
             startX: main.width /2
             startY: main.height /2
@@ -83,7 +93,6 @@ ApplicationWindow{
                signal: main.sgStandby
            }
            onEntered: {
-               pathView.incrementCurrentIndex()
            }
            onExited: {
            }
