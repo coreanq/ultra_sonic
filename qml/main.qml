@@ -8,9 +8,10 @@ import QtQml.StateMachine 1.0 as DSM
 
 ApplicationWindow{
     signal comDataReceived(int rawValue)
-    signal comSwitchChanged(bool state)
     signal comPortOpened()
     signal comPortClosed()
+    signal powerOn()
+    signal powerOff()
     id: mainWnd
 
     visible: true
@@ -18,28 +19,6 @@ ApplicationWindow{
     height: 640
     title: "도어열림감지센서"
 
-    onComPortOpened:{
-        console.log("open")
-        while(1)
-        {
-            if( pathView.currentIndex == 1)
-            {
-                break;
-            }
-            pathView.incrementCurrentIndex()
-        }
-    }
-    onComPortClosed:{
-        console.log("close")
-        while(1)
-        {
-            if( pathView.currentIndex == 0)
-            {
-                break;
-            }
-            pathView.incrementCurrentIndex()
-        }
-    }
     PortSelector {
         id: port
         anchors.top: parent.top
@@ -56,9 +35,11 @@ ApplicationWindow{
         onPortClosed:  {
             comPortClosed()
         }
-        onSwithChanged: {
-            console.log("12483")
-            comSwitchChanged(state)
+        onSwitchChanged: {
+            if( state == 1 )
+                powerOn()
+            else if( state == 0)
+                powerOff()
         }
 
     }
@@ -212,6 +193,66 @@ ApplicationWindow{
         }
 
     }
+
+   DSM.StateMachine {
+       id: mainStateMachine
+       initialState: initState
+       running: true
+       DSM.State {
+           id: initState
+           DSM.SignalTransition{
+               targetState: openState
+               signal: comPortOpened
+           }
+           onEntered: {
+               while(1){
+                    if( pathView.currentIndex == 0){
+                        break;
+                    }
+                    pathView.incrementCurrentIndex()
+                }
+           }
+       }
+       DSM.State {
+          id: openState
+          initialState: standbyState
+          DSM.SignalTransition{
+             targetState: initState
+             signal: comPortClosed
+          }
+
+          DSM.State{
+              id: standbyState
+              DSM.SignalTransition{
+                  targetState: processingState
+                  signal:  powerOn
+               }
+               onEntered: {
+                   while(1){
+                   if( pathView.currentIndex == 1){
+                        break;
+                    }
+                   pathView.incrementCurrentIndex()
+                   }
+               }
+           }
+           DSM.State{
+               id: processingState
+               DSM.SignalTransition{
+                   targetState: standbyState
+                   signal: powerOff
+               }
+               onEntered: {
+                   while(1){
+                   if( pathView.currentIndex == 2){
+                        break;
+                    }
+                   pathView.incrementCurrentIndex()
+                   }
+               }
+           }
+       }
+   }
 
 }
 

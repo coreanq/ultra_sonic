@@ -63,7 +63,7 @@ Rectangle{
             id: initState
             DSM.TimeoutTransition{
                 targetState: clickedState
-                timeout: 1000
+                timeout: 2000
             }
             onEntered: {
                 switchOn.visible =  true
@@ -77,7 +77,7 @@ Rectangle{
             id: clickedState
             DSM.TimeoutTransition{
                 targetState: initState
-                timeout: 1500
+                timeout: 800
             }
             onEntered: {
                 click.x = switchOn.x + 15
@@ -90,7 +90,5 @@ Rectangle{
      }
 
 
-//              easing {type: Easing.OutBack; overshoot: 500}
-//         }
 }
 

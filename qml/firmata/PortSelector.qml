@@ -5,7 +5,7 @@ import Firmata 1.0
 
 RowLayout {
     signal dataReceived(int rawValue)
-    signal swithChanged(bool state)
+    signal switchChanged(int state)
     signal portOpened()
     signal portClosed()
 
@@ -32,45 +32,46 @@ RowLayout {
             pin:7
             onSampled: {
                 dataReceived(rawValue)
-//                console.log(rawValue)
             }
         }
-        DigitalPin{
-            output: false
-            pin: 10
-            onValueChanged: {
-                console.log(v)
-//                switchChanged(value)
+        AnalogPin{
+            channel: 3
+            pin: 3
+            onSampled: {
+                switchChanged(rawValue)
             }
 
         }
     }
-
-    ComboBox {
-        id: cmbPortName
-        model: SerialPortList
-        textRole: "name"
-    }
-
     Button{
         id: btnOpen
-        width: 100
+        width: 50
         text: "Open"
         onClicked: {
             if( text == "Open" ){
                text = "Close"
                openPort(cmbPortName.currentText)
+                cmbPortName.enabled = false
             }
             else {
                 text = "Open"
+                cmbPortName.enabled = true
                 closePort()
             }
 
             text: "Close"
         }
     }
+    ComboBox {
+        id: cmbPortName
+        model: SerialPortList
+        textRole: "name"
+    }
+
+
 
 	Label {
+        width: parent.width / 10
 		text: firmata.statusText
 	}
 }

@@ -2,9 +2,9 @@
 
 #define trigPin 11
 #define echoPin 12
-#define switchPin 10
+#define switchPin 3
 #define RedLed 4
-#define greenLed 3
+#define greenLed 5
 #define pingPin 7
 
 void setup() {
@@ -29,8 +29,8 @@ void loop()
   //  Serial.print(distance);
   //  Serial.println(" cm");
   Firmata.sendAnalog(pingPin, distance);
-  bool pinState = digitalRead(switchPin);
-  Firmata.sendDigitalPort(switchPin, pinState);
+  int pinState = digitalRead(switchPin);
+  Firmata.sendAnalog(switchPin, pinState);
 }
 
 

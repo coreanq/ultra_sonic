@@ -19,14 +19,14 @@
 var ChartLineData = {
     labels: ["","","","","","","", "", "", "", "", "", "", "", ""],
     datasets: [{
-               fillColor: "rgba(220,220,220,0.5)",
+               fillColor: "rgba(180,180,180,0.8)",
              strokeColor: "rgba(220,220,220,1)",
               pointColor: "rgba(220,220,220,1)",
         pointStrokeColor: "#ffffff",
                     data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
         },
         {
-               fillColor: "rgba(20,220,220,0.5)",
+               fillColor: "rgba(20,220,220,0.9)",
              strokeColor: "rgba(20,220,220,1)",
               pointColor: "rgba(20,220,220,1)",
         pointStrokeColor: "#ffffff",

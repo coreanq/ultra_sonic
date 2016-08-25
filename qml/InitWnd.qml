@@ -45,9 +45,11 @@ Rectangle{
         }
 
         Column {
+            id: column
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
             Row {
+                id: row
                 Image {
                     id: computer
                     source: "../image/computer.png"
@@ -83,9 +85,11 @@ Rectangle{
 
     onWidthChanged: {
         sizeChanged()
+        row.spacing = parent.width / 10
     }
     onHeightChanged: {
         sizeChanged()
+        column.spacing = parent.height / 10
     }
 
 
@@ -112,8 +116,6 @@ Rectangle{
                focus.y = transPoint.y - 15
                label.text = "컴퓨터를 준비"
            }
-           onExited: {
-           }
        }
        DSM.State{
            id: wiredState
@@ -132,8 +134,6 @@ Rectangle{
                focus.x = transPoint.x - 15
                focus.y = transPoint.y - 15
                label.text = "장비와 컴퓨터를 연결"
-           }
-           onExited: {
            }
        }
 
@@ -154,8 +154,6 @@ Rectangle{
                focus.x = transPoint.x - 10
                focus.y = transPoint.y - 10
                label.text = "Open 을 클릭하여 장비를 활성"
-           }
-           onExited: {
            }
 
        }

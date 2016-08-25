@@ -21,7 +21,7 @@ Rectangle{
     QChartGallery{
         id: gallery
         anchors.fill: parent
-        anchors.margins: 5
+        anchors.margins: 2
     }
     Timer {
         id: timer
