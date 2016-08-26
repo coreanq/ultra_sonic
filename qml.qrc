@@ -13,5 +13,9 @@
         <file>image/click.png</file>
         <file>image/computer.png</file>
         <file>image/wired.png</file>
+        <file>image/background.jpg</file>
+        <file>image/card_back.jpg</file>
+        <file>image/card_back.png</file>
+        <file>image/switch.png</file>
     </qresource>
 </RCC>

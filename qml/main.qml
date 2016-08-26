@@ -19,6 +19,15 @@ ApplicationWindow{
     height: 640
     title: "도어열림감지센서"
 
+    function setPathViewIndex(index){
+        while(1){
+            if( pathView.currentIndex == index){
+                break;
+            }
+            pathView.incrementCurrentIndex()
+        }
+    }
+
     PortSelector {
         id: port
         anchors.top: parent.top
@@ -41,7 +50,6 @@ ApplicationWindow{
             else if( state == 0)
                 powerOff()
         }
-
     }
     VisualItemModel{
        id: itemModel
@@ -205,12 +213,7 @@ ApplicationWindow{
                signal: comPortOpened
            }
            onEntered: {
-               while(1){
-                    if( pathView.currentIndex == 0){
-                        break;
-                    }
-                    pathView.incrementCurrentIndex()
-                }
+//             setPathViewIndex(0)
            }
        }
        DSM.State {
@@ -228,12 +231,7 @@ ApplicationWindow{
                   signal:  powerOn
                }
                onEntered: {
-                   while(1){
-                   if( pathView.currentIndex == 1){
-                        break;
-                    }
-                   pathView.incrementCurrentIndex()
-                   }
+//                   setPathViewIndex(1)
                }
            }
            DSM.State{
@@ -243,12 +241,8 @@ ApplicationWindow{
                    signal: powerOff
                }
                onEntered: {
-                   while(1){
-                   if( pathView.currentIndex == 2){
-                        break;
-                    }
-                   pathView.incrementCurrentIndex()
-                   }
+//                   setPathViewIndex(2)
+
                }
            }
        }

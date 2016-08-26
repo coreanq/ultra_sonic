@@ -13,9 +13,6 @@ Rectangle{
 //            console.log("%")
             dataUpdate(rawValue)
         }
-        onComSwitchChanged:{
-            console.log(state)
-        }
     }
 
     QChartGallery{
