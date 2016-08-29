@@ -27,6 +27,7 @@ Rectangle{
             id: focus
             radius: 50
             color: "white"
+
             Behavior on x {
                 NumberAnimation {
                     duration: 1000
@@ -124,7 +125,7 @@ Rectangle{
                timeout: 3000
            }
           DSM.SignalTransition{
-               targetState: computerState
+               targetState: wiredState
                signal: initWnd.sizeChanged
            }
            onEntered: {
@@ -144,7 +145,7 @@ Rectangle{
                timeout: 3000
            }
            DSM.SignalTransition{
-               targetState: computerState
+               targetState: clickState
                signal: initWnd.sizeChanged
            }
            onEntered:{
